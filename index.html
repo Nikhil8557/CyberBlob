@@ -16,13 +16,7 @@
             font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, 'DejaVu Sans Mono', monospace;
             touch-action: none;
         }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
+        canvas { display: block; width: 100%; height: 100%; }
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -31,7 +25,6 @@
             pointer-events: none;
             z-index: 50;
         }
-
         .vignette {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -39,11 +32,7 @@
             pointer-events: none;
             z-index: 49;
         }
-
-        .hud-text {
-            text-shadow: 0 0 10px currentColor;
-        }
-
+        .hud-text { text-shadow: 0 0 10px currentColor; }
         @keyframes glitch {
             0% { transform: translate(0) }
             20% { transform: translate(-2px, 2px) }
@@ -52,10 +41,7 @@
             80% { transform: translate(2px, -2px) }
             100% { transform: translate(0) }
         }
-        .glitch-active {
-            animation: glitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
-            color: #ff0055;
-        }
+        .glitch-active { animation: glitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite; color: #ff0055; }
     </style>
 </head>
 <body class="text-cyan-400 selection:bg-cyan-500 selection:text-black">
@@ -64,79 +50,63 @@
     <div class="scanlines"></div>
     <div class="vignette"></div>
 
-    <!-- UI Overlay -->
-    <div id="uiLayer" class="absolute inset-0 z-40 flex flex-col justify-between p-6 pointer-events-none">
+    <div id="uiLayer" class="absolute inset-0 z-40 flex flex-col justify-between p-6 pointer-events-auto cursor-pointer" onclick="handleGlobalClick()">
         
-        <!-- Top HUD -->
-        <div class="flex justify-between items-start w-full">
+        <div class="flex justify-between items-start w-full pointer-events-none">
             <div class="flex flex-col">
-                <span class="text-xs tracking-[0.3em] text-cyan-700 font-bold mb-1">SCORE</span>
+                <span class="text-[10px] tracking-[0.3em] text-cyan-900 font-bold mb-1 underline">DATA_STREAM</span>
                 <span id="scoreDisplay" class="text-3xl md:text-5xl font-black hud-text tracking-wider text-cyan-300">00000</span>
             </div>
             <div class="flex flex-col text-right">
-                <span class="text-xs tracking-[0.3em] text-fuchsia-700 font-bold mb-1">HI-SCORE</span>
+                <span class="text-[10px] tracking-[0.3em] text-fuchsia-900 font-bold mb-1 underline">MAX_BUFFER</span>
                 <span id="hiScoreDisplay" class="text-xl md:text-3xl font-black hud-text tracking-wider text-fuchsia-400">00000</span>
             </div>
         </div>
 
-        <!-- Center Screens -->
-        <div id="centerScreen" class="flex flex-col items-center justify-center text-center transition-opacity duration-300">
+        <div id="centerScreen" class="flex flex-col items-center justify-center text-center transition-opacity duration-300 pointer-events-none">
             
-            <!-- Start Screen -->
-            <div id="startScreen" class="bg-black/60 backdrop-blur-md border border-cyan-500/30 p-8 md:p-12 rounded-xl shadow-[0_0_50px_rgba(6,182,212,0.2)] pointer-events-auto">
-                <h1 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-2 filter drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">CYBER_RUNNER</h1>
-                <p class="text-cyan-600 tracking-widest text-sm md:text-base mb-8 uppercase">Initialize Uplink Sequence</p>
+            <div id="startScreen" class="bg-black/80 backdrop-blur-md border border-cyan-500/30 p-8 md:p-12 rounded-xl shadow-[0_0_50px_rgba(6,182,212,0.2)]">
+                <h1 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-2">CYBER_BLOB</h1>
                 
-                <div class="grid grid-cols-2 gap-6 text-left mb-8 text-sm md:text-base">
-                    <div class="space-y-2">
-                        <div class="text-cyan-300"><kbd class="bg-cyan-950 border border-cyan-700 px-2 py-1 rounded">SPACE</kbd> / <kbd class="bg-cyan-950 border border-cyan-700 px-2 py-1 rounded">↑</kbd></div>
-                        <div class="text-cyan-600 text-xs tracking-widest">JUMP (HOLD TO FLOAT)</div>
+                <div class="flex justify-center space-x-8 mt-8 mb-8">
+                    <div class="flex flex-col items-center">
+                        <span class="bg-cyan-950 border border-cyan-700 text-cyan-400 px-3 py-1 rounded text-sm mb-2">SPACE</span>
+                        <span class="text-[10px] tracking-widest text-cyan-700">JUMP</span>
                     </div>
-                    <div class="space-y-2">
-                        <div class="text-fuchsia-300"><kbd class="bg-fuchsia-950 border border-fuchsia-700 px-2 py-1 rounded">SHIFT</kbd> / <kbd class="bg-fuchsia-950 border border-fuchsia-700 px-2 py-1 rounded">↓</kbd></div>
-                        <div class="text-fuchsia-600 text-xs tracking-widest">DUCK / FAST DROP</div>
+                    <div class="flex flex-col items-center">
+                        <span class="bg-fuchsia-950 border border-fuchsia-700 text-fuchsia-400 px-3 py-1 rounded text-sm mb-2">SHIFT</span>
+                        <span class="text-[10px] tracking-widest text-fuchsia-700">DUCK</span>
                     </div>
                 </div>
 
-                <p class="text-cyan-500 animate-pulse tracking-widest text-sm">PRESS [SPACE] OR TAP TO COMMENCE</p>
+                <p class="text-cyan-500 animate-pulse tracking-[0.4em] text-xs uppercase">Awaiting_Uplink</p>
             </div>
 
-            <!-- Game Over Screen (Hidden by default) -->
-            <div id="gameOverScreen" class="hidden bg-black/80 backdrop-blur-md border border-red-500/50 p-8 md:p-12 rounded-xl shadow-[0_0_50px_rgba(255,0,85,0.3)] pointer-events-auto mt-12">
-                <h1 class="text-6xl md:text-8xl font-black text-red-500 mb-2 glitch-active">SYSTEM CRASH</h1>
-                <p class="text-red-400 tracking-widest text-sm md:text-base mb-8 uppercase">Connection Severed</p>
-                <p class="text-cyan-500 animate-pulse tracking-widest text-sm hover:text-white cursor-pointer transition-colors" onclick="startGame()">PRESS [SPACE] TO REBOOT</p>
+            <div id="gameOverScreen" class="hidden bg-black/90 backdrop-blur-md border border-red-500/50 p-8 md:p-12 rounded-xl shadow-[0_0_50px_rgba(255,0,85,0.3)] mt-12">
+                <h1 class="text-6xl md:text-8xl font-black text-red-500 mb-2 glitch-active">CRASH_LOG</h1>
+                <p class="text-cyan-500 animate-pulse tracking-[0.4em] text-xs uppercase mt-6">Restart_Reboot</p>
             </div>
-
         </div>
 
-        <!-- Bottom HUD -->
-        <div class="w-full flex justify-between items-end">
-            <span class="text-[10px] tracking-widest text-cyan-900"></span>
-            <span id="speedDisplay" class="text-xs tracking-widest text-cyan-600">SPEED: 1.0x</span>
+        <div class="w-full flex justify-between items-end pointer-events-none">
+            <span class="text-[10px] tracking-widest text-cyan-900">VER: 9.4.2 // NO_CONNECTION</span>
+            <span id="speedDisplay" class="text-xs tracking-widest text-cyan-600 font-bold">X-1.0</span>
         </div>
     </div>
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
         function playTone(freq, type, duration, vol=0.1, slideFreq=null) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            
             osc.type = type;
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-            
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            if (slideFreq) {
-                osc.frequency.exponentialRampToValueAtTime(slideFreq, audioCtx.currentTime + duration);
-            }
-            
+            if (slideFreq) osc.frequency.exponentialRampToValueAtTime(slideFreq, audioCtx.currentTime + duration);
             gain.gain.setValueAtTime(vol, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            
             osc.start();
             osc.stop(audioCtx.currentTime + duration);
         }
@@ -144,21 +114,12 @@
         const SFX = {
             jump: () => playTone(300, 'square', 0.2, 0.05, 600),
             duck: () => playTone(200, 'sine', 0.1, 0.05, 100),
-            score: () => {
-                playTone(600, 'square', 0.1, 0.05);
-                setTimeout(() => playTone(900, 'square', 0.2, 0.05), 100);
-            },
-            crash: () => {
-                playTone(150, 'sawtooth', 0.5, 0.1, 40);
-                playTone(100, 'square', 0.5, 0.1, 20);
-            }
+            score: () => { playTone(600, 'square', 0.1, 0.05); setTimeout(() => playTone(900, 'square', 0.2, 0.05), 100); },
+            crash: () => { playTone(150, 'sawtooth', 0.5, 0.1, 40); playTone(100, 'square', 0.5, 0.1, 20); }
         };
-
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-
-        // UI Elements
         const scoreDisplay = document.getElementById('scoreDisplay');
         const hiScoreDisplay = document.getElementById('hiScoreDisplay');
         const speedDisplay = document.getElementById('speedDisplay');
@@ -166,269 +127,125 @@
         const gameOverScreen = document.getElementById('gameOverScreen');
         const centerScreen = document.getElementById('centerScreen');
 
-        // Game State
-        let STATE = 'MENU'; // MENU, PLAYING, GAMEOVER
+        let STATE = 'MENU';
         let score = 0;
         let hiScore = localStorage.getItem('cyberHiScore') || 0;
         hiScoreDisplay.innerText = hiScore.toString().padStart(5, '0');
         
         let gameSpeed = 1;
-        const BASE_SPEED = 600; // pixels per second
+        const BASE_SPEED = 600;
         let lastTime = 0;
-        
-        // Physics constants
         const GRAVITY = 2500;
         const JUMP_VELOCITY = -900;
-        const GROUND_Y_OFFSET = 100; // Distance from bottom
-        
-        let groundY = 0; // Calculated on resize
+        const GROUND_Y_OFFSET = 100;
+        let groundY = 0;
 
-        // Inputs
         const keys = { jump: false, duck: false };
+        let player, obstacles = [], particles = [], backgroundLines = [];
 
-        // Entities
-        let player;
-        let obstacles = [];
-        let particles = [];
-        let backgroundLines = [];
-
-        // Resize handler
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             groundY = canvas.height - GROUND_Y_OFFSET;
-            
-            if (player) {
-                player.y = groundY;
-            }
-            
-            // Rebuild bg lines
+            if (player) player.y = groundY;
             backgroundLines = [];
-            for(let i=0; i<20; i++) {
-                backgroundLines.push({
-                    z: (i / 20) * 1000
-                });
-            }
+            for(let i=0; i<20; i++) backgroundLines.push({ z: (i / 20) * 1000 });
         }
         window.addEventListener('resize', resize);
 
-        // Player Class
         class Player {
             constructor() {
-                this.w = 30;
-                this.h = 60;
-                this.x = 100;
-                this.y = groundY;
-                this.vy = 0;
-                this.isJumping = false;
-                this.isDucking = false;
-                this.color = '#00ffff'; // Cyan
+                this.w = 30; this.h = 60; this.x = 100;
+                this.y = groundY; this.vy = 0;
+                this.isJumping = false; this.isDucking = false;
+                this.color = '#00ffff';
             }
-
             update(dt) {
-                // Ducking logic
                 if (keys.duck && !this.isJumping) {
-                    if (!this.isDucking) {
-                        this.isDucking = true;
-                        this.h = 30;
-                        createParticles(this.x + this.w/2, this.y, 5, this.color);
-                    }
+                    if (!this.isDucking) { this.isDucking = true; this.h = 30; createParticles(this.x + this.w/2, this.y, 5, this.color); }
                 } else if (!keys.duck && this.isDucking) {
-                    this.isDucking = false;
-                    this.h = 60;
-                    this.y -= 30; // Push up so we don't clip through floor
+                    this.isDucking = false; this.h = 60; this.y -= 30;
                 }
-
-                // Physics
                 this.vy += GRAVITY * dt;
-                
-                // Fast drop
-                if (keys.duck && this.isJumping) {
-                    this.vy += GRAVITY * 2 * dt;
-                }
-
-                // Float slightly if holding jump
-                if (keys.jump && this.vy > 0 && this.isJumping) {
-                    this.vy -= GRAVITY * 0.4 * dt; 
-                }
-
+                if (keys.duck && this.isJumping) this.vy += GRAVITY * 2 * dt;
+                if (keys.jump && this.vy > 0 && this.isJumping) this.vy -= GRAVITY * 0.4 * dt;
                 this.y += this.vy * dt;
-
-                // Ground collision
                 if (this.y >= groundY) {
-                    this.y = groundY;
-                    this.vy = 0;
-                    if (this.isJumping) {
-                        this.isJumping = false;
-                        createParticles(this.x + this.w/2, groundY, 10, this.color); // Landing dust
-                    }
+                    this.y = groundY; this.vy = 0;
+                    if (this.isJumping) { this.isJumping = false; createParticles(this.x + this.w/2, groundY, 10, this.color); }
                 }
             }
-
             jump() {
-                if (!this.isJumping) {
-                    this.isJumping = true;
-                    this.vy = JUMP_VELOCITY;
-                    SFX.jump();
-                    createParticles(this.x + this.w/2, groundY, 15, '#ffffff');
-                }
+                if (!this.isJumping) { this.isJumping = true; this.vy = JUMP_VELOCITY; SFX.jump(); createParticles(this.x + this.w/2, groundY, 15, '#ffffff'); }
             }
-
             draw(ctx) {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                
-                // Neon Glow
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = this.color;
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-
-                // Draw angular cyber-shape
+                ctx.shadowBlur = 20; ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
                 ctx.beginPath();
-                if (this.isDucking) {
-                    // Sleek low profile
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(this.w * 1.5, 0);
-                    ctx.lineTo(this.w, -this.h);
-                    ctx.lineTo(0, -this.h * 0.5);
-                } else {
-                    // Tall runner
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(this.w, 0);
-                    ctx.lineTo(this.w + 10, -this.h * 0.3);
-                    ctx.lineTo(this.w * 0.5, -this.h);
-                    ctx.lineTo(0, -this.h * 0.8);
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
-                // Engine thrust trail if jumping
+                if (this.isDucking) { ctx.moveTo(0, 0); ctx.lineTo(this.w * 1.5, 0); ctx.lineTo(this.w, -this.h); ctx.lineTo(0, -this.h * 0.5); } 
+                else { ctx.moveTo(0, 0); ctx.lineTo(this.w, 0); ctx.lineTo(this.w + 10, -this.h * 0.3); ctx.lineTo(this.w * 0.5, -this.h); ctx.lineTo(0, -this.h * 0.8); }
+                ctx.closePath(); ctx.fill(); ctx.stroke();
                 if (this.isJumping) {
-                    ctx.fillStyle = '#0055ff';
-                    ctx.shadowColor = '#0055ff';
-                    ctx.beginPath();
-                    ctx.moveTo(this.w * 0.2, 0);
-                    ctx.lineTo(this.w * 0.8, 0);
-                    ctx.lineTo(this.w * 0.5, 15 + Math.random() * 10);
-                    ctx.fill();
+                    ctx.fillStyle = '#0055ff'; ctx.shadowColor = '#0055ff';
+                    ctx.beginPath(); ctx.moveTo(this.w * 0.2, 0); ctx.lineTo(this.w * 0.8, 0); ctx.lineTo(this.w * 0.5, 15 + Math.random() * 10); ctx.fill();
                 }
-
                 ctx.restore();
             }
         }
 
-        // Obstacle Class
         class Obstacle {
             constructor(type, speedMult) {
-                this.x = canvas.width;
-                this.type = type; // 0: ground, 1: air high, 2: air low
+                this.x = canvas.width; this.type = type;
                 this.w = type === 0 ? 30 + Math.random() * 20 : 50;
                 this.h = type === 0 ? 50 + Math.random() * 40 : 20;
-                
                 if (type === 0) this.y = groundY;
-                else if (type === 1) this.y = groundY - 70; // Duck under this
-                else this.y = groundY - 30; // Jump over this
-
-                this.color = type === 0 ? '#ff0055' : '#ffaa00'; // Magenta ground, Orange air
-                this.markedForDeletion = false;
-                this.speedMult = speedMult;
+                else if (type === 1) this.y = groundY - 75;
+                else this.y = groundY - 30;
+                this.color = type === 0 ? '#ff0055' : '#ffaa00';
+                this.markedForDeletion = false; this.speedMult = speedMult;
             }
-
             update(dt) {
                 this.x -= BASE_SPEED * this.speedMult * dt;
                 if (this.x + this.w < 0) this.markedForDeletion = true;
             }
-
             draw(ctx) {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = '#110000';
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 3;
-
+                ctx.save(); ctx.translate(this.x, this.y);
+                ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+                ctx.fillStyle = '#110000'; ctx.strokeStyle = this.color; ctx.lineWidth = 3;
                 ctx.beginPath();
-                if (this.type === 0) {
-                    // Ground spike
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(this.w, 0);
-                    ctx.lineTo(this.w * 0.8, -this.h);
-                    ctx.lineTo(this.w * 0.2, -this.h);
-                } else {
-                    // Air laser
-                    ctx.rect(0, -this.h, this.w, this.h);
-                    // Inner laser core
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(2, -this.h + 5, this.w - 4, this.h - 10);
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
+                if (this.type === 0) { ctx.moveTo(0, 0); ctx.lineTo(this.w, 0); ctx.lineTo(this.w * 0.8, -this.h); ctx.lineTo(this.w * 0.2, -this.h); } 
+                else { ctx.rect(0, -this.h, this.w, this.h); ctx.fillStyle = '#ffffff'; ctx.fillRect(2, -this.h + 5, this.w - 4, this.h - 10); }
+                ctx.closePath(); ctx.fill(); ctx.stroke();
                 ctx.restore();
             }
         }
 
-        // Particle System
         class Particle {
             constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.vx = (Math.random() - 0.5) * 400;
-                this.vy = (Math.random() - 1) * 400;
-                this.life = 1.0;
-                this.decay = 1.5 + Math.random();
-                this.color = color;
-                this.size = 2 + Math.random() * 4;
+                this.x = x; this.y = y;
+                this.vx = (Math.random() - 0.5) * 400; this.vy = (Math.random() - 1) * 400;
+                this.life = 1.0; this.decay = 1.5 + Math.random();
+                this.color = color; this.size = 2 + Math.random() * 4;
             }
-            update(dt) {
-                this.x += this.vx * dt;
-                this.y += this.vy * dt;
-                this.life -= this.decay * dt;
-            }
-            draw(ctx) {
-                ctx.globalAlpha = Math.max(0, this.life);
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-                ctx.globalAlpha = 1.0;
-            }
+            update(dt) { this.x += this.vx * dt; this.y += this.vy * dt; this.life -= this.decay * dt; }
+            draw(ctx) { ctx.globalAlpha = Math.max(0, this.life); ctx.shadowBlur = 10; ctx.shadowColor = this.color; ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); ctx.globalAlpha = 1.0; }
         }
 
-        function createParticles(x, y, count, color) {
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle(x, y, color));
-            }
-        }
+        function createParticles(x, y, count, color) { for (let i = 0; i < count; i++) particles.push(new Particle(x, y, color)); }
 
-        // --- Core Functions ---
-
-        let spawnTimer = 0;
-        let nextSpawnTime = 1.5;
+        let spawnTimer = 0, nextSpawnTime = 1.5;
 
         function startGame() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             STATE = 'PLAYING';
-            score = 0;
-            gameSpeed = 1;
-            obstacles = [];
-            particles = [];
-            spawnTimer = 0;
-            
+            score = 0; gameSpeed = 1; obstacles = []; particles = []; spawnTimer = 0;
             player = new Player();
             resize();
-
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
-            centerScreen.classList.add('opacity-0'); // Fade out center
-            
+            centerScreen.classList.add('opacity-0');
             lastTime = performance.now();
             requestAnimationFrame(gameLoop);
         }
@@ -437,904 +254,89 @@
             STATE = 'GAMEOVER';
             SFX.crash();
             createParticles(player.x + player.w/2, player.y - player.h/2, 50, player.color);
-            createParticles(player.x + player.w/2, player.y - player.h/2, 50, '#ff0055');
-            
-            if (score > hiScore) {
-                hiScore = Math.floor(score);
-                localStorage.setItem('cyberHiScore', hiScore);
-                hiScoreDisplay.innerText = hiScore.toString().padStart(5, '0');
-            }
-
+            if (score > hiScore) { hiScore = Math.floor(score); localStorage.setItem('cyberHiScore', hiScore); hiScoreDisplay.innerText = hiScore.toString().padStart(5, '0'); }
             centerScreen.classList.remove('opacity-0');
             gameOverScreen.classList.remove('hidden');
         }
 
         function drawBackground(dt) {
-            // Horizon line
             const horizon = groundY;
-            
-            // Floor Grid (Pseudo 3D perspective)
-            ctx.strokeStyle = 'rgba(190, 24, 93, 0.3)'; // Fuchsia grid
-            ctx.lineWidth = 1;
-            
-            // Vertical perspective lines
-            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(190, 24, 93, 0.3)'; ctx.lineWidth = 1; ctx.beginPath();
             const vanishingPointX = canvas.width / 2;
-            const vanishingPointY = horizon - 50;
-            
-            for (let i = -20; i <= 20; i++) {
-                const xBottom = vanishingPointX + (i * 100);
-                ctx.moveTo(vanishingPointX, horizon);
-                ctx.lineTo(xBottom, canvas.height);
-            }
-            ctx.stroke();
-
-            // Horizontal scrolling lines
-            ctx.beginPath();
+            for (let i = -20; i <= 20; i++) { const xBottom = vanishingPointX + (i * 100); ctx.moveTo(vanishingPointX, horizon); ctx.lineTo(xBottom, canvas.height); }
+            ctx.stroke(); ctx.beginPath();
             backgroundLines.forEach(line => {
-                // Move line towards viewer
                 line.z -= (BASE_SPEED * gameSpeed * 0.5) * dt;
                 if (line.z < 0) line.z = 1000;
-
-                // Perspective projection
                 const scale = 1000 / Math.max(1, line.z);
-                const y = horizon + (scale * 20); // Push down based on scale
-                
-                if (y > horizon && y < canvas.height) {
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvas.width, y);
-                }
+                const y = horizon + (scale * 20);
+                if (y > horizon && y < canvas.height) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
             });
-            ctx.stroke();
-
-            // Glowing Horizon line
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#be185d';
-            ctx.strokeStyle = '#f472b6';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, horizon);
-            ctx.lineTo(canvas.width, horizon);
-            ctx.stroke();
-            ctx.shadowBlur = 0; // reset
+            ctx.stroke(); ctx.shadowBlur = 20; ctx.shadowColor = '#be185d'; ctx.strokeStyle = '#f472b6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, horizon); ctx.lineTo(canvas.width, horizon); ctx.stroke(); ctx.shadowBlur = 0;
         }
 
         function checkCollision(p, obs) {
-            // Precise AABB collision
-            const padding = 5; // Forgiving hitbox
-            
-            // Player Box
-            const px = p.x + padding;
-            const py = p.y - p.h + padding;
-            const pw = p.w - padding * 2;
-            const ph = p.h - padding * 2;
-
-            // Obstacle Box
-            const ox = obs.x + padding;
-            const oy = obs.y - obs.h + padding;
-            const ow = obs.w - padding * 2;
-            const oh = obs.h - padding * 2;
-
-            return (
-                px < ox + ow &&
-                px + pw > ox &&
-                py < oy + oh &&
-                py + ph > oy
-            );
+            const pad = 8;
+            return (p.x + pad < obs.x + obs.w - pad && p.x + p.w - pad > obs.x + pad && p.y - p.h + pad < obs.y - pad && p.y - pad > obs.y - obs.h + pad);
         }
 
-        // --- Main Loop ---
         function gameLoop(timestamp) {
             if (STATE !== 'PLAYING') {
-                // Continue rendering particles if dead
                 if (STATE === 'GAMEOVER') {
-                    let dt = (timestamp - lastTime) / 1000;
-                    if (dt > 0.1) dt = 0.1;
-                    lastTime = timestamp;
-
-                    ctx.fillStyle = '#05050a';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    drawBackground(dt);
-                    
-                    obstacles.forEach(obs => obs.draw(ctx));
+                    let dt = (timestamp - lastTime) / 1000; if (dt > 0.1) dt = 0.1; lastTime = timestamp;
+                    ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    drawBackground(dt); obstacles.forEach(obs => obs.draw(ctx));
                     particles.forEach(p => { p.update(dt); p.draw(ctx); });
                     particles = particles.filter(p => p.life > 0);
-                    
                     requestAnimationFrame(gameLoop);
                 }
                 return;
             }
-
-            // Delta time calculation
-            let dt = (timestamp - lastTime) / 1000;
-            if (dt > 0.1) dt = 0.1; // Cap dt for lag spikes
-            lastTime = timestamp;
-
-            // Clear canvas
-            ctx.fillStyle = '#05050a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Update Game Logic
-            score += 10 * gameSpeed * dt;
-            gameSpeed += 0.01 * dt; // Gradually increase speed
-            
-            // Speed UI update (throttled visually)
-            if (Math.floor(score) % 10 === 0) {
-                scoreDisplay.innerText = Math.floor(score).toString().padStart(5, '0');
-                speedDisplay.innerText = `SPEED: ${gameSpeed.toFixed(1)}x`;
-            }
-
-            // Milestone sound
-            if (Math.floor(score) % 500 === 0 && score > 10) {
-                SFX.score();
-                scoreDisplay.classList.add('text-white');
-                setTimeout(() => scoreDisplay.classList.remove('text-white'), 300);
-            }
-
-            // Render Background
+            let dt = (timestamp - lastTime) / 1000; if (dt > 0.1) dt = 0.1; lastTime = timestamp;
+            ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            score += 10 * gameSpeed * dt; gameSpeed += 0.005 * dt;
+            if (Math.floor(score) % 10 === 0) { scoreDisplay.innerText = Math.floor(score).toString().padStart(5, '0'); speedDisplay.innerText = `X-${gameSpeed.toFixed(1)}`; }
+            if (Math.floor(score) % 500 === 0 && score > 10) SFX.score();
             drawBackground(dt);
-
-            // Player logic
-            player.update(dt);
-            player.draw(ctx);
-
-            // Spawner Logic
+            player.update(dt); player.draw(ctx);
             spawnTimer += dt;
             if (spawnTimer >= nextSpawnTime) {
-                spawnTimer = 0;
-                
-                // Determine obstacle type based on random chance
-                let type = 0; // Ground
-                if (score > 200) {
-                    const r = Math.random();
-                    if (r < 0.3) type = 1; // High laser (duck)
-                    else if (r < 0.5) type = 2; // Low laser (jump)
-                }
-
+                spawnTimer = 0; let type = 0;
+                if (score > 200) { const r = Math.random(); if (r < 0.25) type = 1; else if (r < 0.45) type = 2; }
                 obstacles.push(new Obstacle(type, gameSpeed));
-                
-                // Randomize next spawn time, gets faster as game speeds up
-                nextSpawnTime = (0.8 + Math.random() * 1.2) / gameSpeed;
+                nextSpawnTime = (0.7 + Math.random() * 1.3) / gameSpeed;
             }
-
-            // Obstacles & Collision
-            obstacles.forEach(obs => {
-                obs.update(dt);
-                obs.draw(ctx);
-                
-                if (checkCollision(player, obs)) {
-                    gameOver();
-                }
-            });
+            obstacles.forEach(obs => { obs.update(dt); obs.draw(ctx); if (checkCollision(player, obs)) gameOver(); });
             obstacles = obstacles.filter(obs => !obs.markedForDeletion);
-
-            // Particles
-            particles.forEach(p => {
-                p.update(dt);
-                p.draw(ctx);
-            });
+            particles.forEach(p => { p.update(dt); p.draw(ctx); });
             particles = particles.filter(p => p.life > 0);
-
-            // Loop
-            if (STATE === 'PLAYING') {
-                requestAnimationFrame(gameLoop);
-            }
-        }
-
-        
-        function handleKeyDown(e) {
-            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
-                e.preventDefault();
-                if (STATE === 'MENU' || STATE === 'GAMEOVER') {
-                    startGame();
-                } else {
-                    keys.jump = true;
-                    player.jump();
-                }
-            }
-            if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'ArrowDown' || e.code === 'KeyS') {
-                e.preventDefault();
-                keys.duck = true;
-                if (STATE === 'PLAYING') SFX.duck();
-            }
-        }
-
-        function handleKeyUp(e) {
-            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') keys.jump = false;
-            if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'ArrowDown' || e.code === 'KeyS') keys.duck = false;
-        }
-
-        // Touch Controls
-        function handleTouchStart(e) {
-            e.preventDefault();
-            if (STATE === 'MENU' || STATE === 'GAMEOVER') {
-                startGame();
-                return;
-            }
-            
-            const touchY = e.touches[0].clientY;
-            if (touchY < window.innerHeight / 2) {
-                // Tap top half: Jump
-                keys.jump = true;
-                player.jump();
-            } else {
-                // Tap bottom half: Duck
-                keys.duck = true;
-                if (STATE === 'PLAYING') SFX.duck();
-            }
-        }
-
-        function handleTouchEnd(e) {
-            e.preventDefault();
-            keys.jump = false;
-            keys.duck = false;
-        }
-
-        window.addEventListener('keydown', handleKeyDown, {passive: false});
-        window.addEventListener('keyup', handleKeyUp);
-        window.addEventListener('touchstart', handleTouchStart, {passive: false});
-        window.addEventListener('touchend', handleTouchEnd);
-
-        // Initial setup
-        resize();
-        // Draw the background once for the menu screen
-        ctx.fillStyle = '#05050a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        drawBackground(0);
-
-    </script>
-</body>
-</html>            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
-            pointer-events: none;
-            z-index: 49;
-        }
-
-        .hud-text {
-            text-shadow: 0 0 10px currentColor;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
-        }
-        .glitch-active {
-            animation: glitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
-            color: #ff0055;
-        }
-    </style>
-</head>
-<body class="text-cyan-400 selection:bg-cyan-500 selection:text-black">
-
-    <canvas id="gameCanvas"></canvas>
-    <div class="scanlines"></div>
-    <div class="vignette"></div>
-
-    <!-- UI Overlay -->
-    <div id="uiLayer" class="absolute inset-0 z-40 flex flex-col justify-between p-6 pointer-events-none">
-        
-        <!-- Top HUD -->
-        <div class="flex justify-between items-start w-full">
-            <div class="flex flex-col">
-                <span class="text-xs tracking-[0.3em] text-cyan-700 font-bold mb-1">SCORE</span>
-                <span id="scoreDisplay" class="text-3xl md:text-5xl font-black hud-text tracking-wider text-cyan-300">00000</span>
-            </div>
-            <div class="flex flex-col text-right">
-                <span class="text-xs tracking-[0.3em] text-fuchsia-700 font-bold mb-1">HI-SCORE</span>
-                <span id="hiScoreDisplay" class="text-xl md:text-3xl font-black hud-text tracking-wider text-fuchsia-400">00000</span>
-            </div>
-        </div>
-
-        <!-- Center Screens -->
-        <div id="centerScreen" class="flex flex-col items-center justify-center text-center transition-opacity duration-300">
-            
-            <!-- Start Screen -->
-            <div id="startScreen" class="bg-black/60 backdrop-blur-md border border-cyan-500/30 p-8 md:p-12 rounded-xl shadow-[0_0_50px_rgba(6,182,212,0.2)] pointer-events-auto">
-                <h1 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-2 filter drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">CYBER_RUNNER</h1>
-                <p class="text-cyan-600 tracking-widest text-sm md:text-base mb-8 uppercase">Initialize Uplink Sequence</p>
-                
-                <div class="grid grid-cols-2 gap-6 text-left mb-8 text-sm md:text-base">
-                    <div class="space-y-2">
-                        <div class="text-cyan-300"><kbd class="bg-cyan-950 border border-cyan-700 px-2 py-1 rounded">SPACE</kbd> / <kbd class="bg-cyan-950 border border-cyan-700 px-2 py-1 rounded">↑</kbd></div>
-                        <div class="text-cyan-600 text-xs tracking-widest">JUMP (HOLD TO FLOAT)</div>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="text-fuchsia-300"><kbd class="bg-fuchsia-950 border border-fuchsia-700 px-2 py-1 rounded">SHIFT</kbd> / <kbd class="bg-fuchsia-950 border border-fuchsia-700 px-2 py-1 rounded">↓</kbd></div>
-                        <div class="text-fuchsia-600 text-xs tracking-widest">DUCK / FAST DROP</div>
-                    </div>
-                </div>
-
-                <p class="text-cyan-500 animate-pulse tracking-widest text-sm">PRESS [SPACE] OR TAP TO COMMENCE</p>
-            </div>
-
-            <!-- Game Over Screen (Hidden by default) -->
-            <div id="gameOverScreen" class="hidden bg-black/80 backdrop-blur-md border border-red-500/50 p-8 md:p-12 rounded-xl shadow-[0_0_50px_rgba(255,0,85,0.3)] pointer-events-auto mt-12">
-                <h1 class="text-6xl md:text-8xl font-black text-red-500 mb-2 glitch-active">SYSTEM CRASH</h1>
-                <p class="text-red-400 tracking-widest text-sm md:text-base mb-8 uppercase">Connection Severed</p>
-                <p class="text-cyan-500 animate-pulse tracking-widest text-sm hover:text-white cursor-pointer transition-colors" onclick="startGame()">PRESS [SPACE] TO REBOOT</p>
-            </div>
-
-        </div>
-
-        <!-- Bottom HUD -->
-        <div class="w-full flex justify-between items-end">
-            <span class="text-[10px] tracking-widest text-cyan-900">SECURE CONNECTION // PROTOCOL 9</span>
-            <span id="speedDisplay" class="text-xs tracking-widest text-cyan-600">SPEED: 1.0x</span>
-        </div>
-    </div>
-
-    <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playTone(freq, type, duration, vol=0.1, slideFreq=null) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = type;
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            if (slideFreq) {
-                osc.frequency.exponentialRampToValueAtTime(slideFreq, audioCtx.currentTime + duration);
-            }
-            
-            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
-        }
-
-        const SFX = {
-            jump: () => playTone(300, 'square', 0.2, 0.05, 600),
-            duck: () => playTone(200, 'sine', 0.1, 0.05, 100),
-            score: () => {
-                playTone(600, 'square', 0.1, 0.05);
-                setTimeout(() => playTone(900, 'square', 0.2, 0.05), 100);
-            },
-            crash: () => {
-                playTone(150, 'sawtooth', 0.5, 0.1, 40);
-                playTone(100, 'square', 0.5, 0.1, 20);
-            }
-        };
-
-
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // UI Elements
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const hiScoreDisplay = document.getElementById('hiScoreDisplay');
-        const speedDisplay = document.getElementById('speedDisplay');
-        const startScreen = document.getElementById('startScreen');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const centerScreen = document.getElementById('centerScreen');
-
-        // Game State
-        let STATE = 'MENU'; // MENU, PLAYING, GAMEOVER
-        let score = 0;
-        let hiScore = localStorage.getItem('cyberHiScore') || 0;
-        hiScoreDisplay.innerText = hiScore.toString().padStart(5, '0');
-        
-        let gameSpeed = 1;
-        const BASE_SPEED = 600; // pixels per second
-        let lastTime = 0;
-        
-        // Physics constants
-        const GRAVITY = 2500;
-        const JUMP_VELOCITY = -900;
-        const GROUND_Y_OFFSET = 100; // Distance from bottom
-        
-        let groundY = 0; // Calculated on resize
-
-        // Inputs
-        const keys = { jump: false, duck: false };
-
-        // Entities
-        let player;
-        let obstacles = [];
-        let particles = [];
-        let backgroundLines = [];
-
-        // Resize handler
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            groundY = canvas.height - GROUND_Y_OFFSET;
-            
-            if (player) {
-                player.y = groundY;
-            }
-            
-            // Rebuild bg lines
-            backgroundLines = [];
-            for(let i=0; i<20; i++) {
-                backgroundLines.push({
-                    z: (i / 20) * 1000
-                });
-            }
-        }
-        window.addEventListener('resize', resize);
-
-        // Player Class
-        class Player {
-            constructor() {
-                this.w = 30;
-                this.h = 60;
-                this.x = 100;
-                this.y = groundY;
-                this.vy = 0;
-                this.isJumping = false;
-                this.isDucking = false;
-                this.color = '#00ffff'; // Cyan
-            }
-
-            update(dt) {
-                // Ducking logic
-                if (keys.duck && !this.isJumping) {
-                    if (!this.isDucking) {
-                        this.isDucking = true;
-                        this.h = 30;
-                        createParticles(this.x + this.w/2, this.y, 5, this.color);
-                    }
-                } else if (!keys.duck && this.isDucking) {
-                    this.isDucking = false;
-                    this.h = 60;
-                    this.y -= 30; // Push up so we don't clip through floor
-                }
-
-                // Physics
-                this.vy += GRAVITY * dt;
-                
-                // Fast drop
-                if (keys.duck && this.isJumping) {
-                    this.vy += GRAVITY * 2 * dt;
-                }
-
-                // Float slightly if holding jump
-                if (keys.jump && this.vy > 0 && this.isJumping) {
-                    this.vy -= GRAVITY * 0.4 * dt; 
-                }
-
-                this.y += this.vy * dt;
-
-                // Ground collision
-                if (this.y >= groundY) {
-                    this.y = groundY;
-                    this.vy = 0;
-                    if (this.isJumping) {
-                        this.isJumping = false;
-                        createParticles(this.x + this.w/2, groundY, 10, this.color); // Landing dust
-                    }
-                }
-            }
-
-            jump() {
-                if (!this.isJumping) {
-                    this.isJumping = true;
-                    this.vy = JUMP_VELOCITY;
-                    SFX.jump();
-                    createParticles(this.x + this.w/2, groundY, 15, '#ffffff');
-                }
-            }
-
-            draw(ctx) {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                // Neon Glow
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = this.color;
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-
-                // Draw angular cyber-shape
-                ctx.beginPath();
-                if (this.isDucking) {
-                    // Sleek low profile
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(this.w * 1.5, 0);
-                    ctx.lineTo(this.w, -this.h);
-                    ctx.lineTo(0, -this.h * 0.5);
-                } else {
-                    // Tall runner
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(this.w, 0);
-                    ctx.lineTo(this.w + 10, -this.h * 0.3);
-                    ctx.lineTo(this.w * 0.5, -this.h);
-                    ctx.lineTo(0, -this.h * 0.8);
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
-                // Engine thrust trail if jumping
-                if (this.isJumping) {
-                    ctx.fillStyle = '#0055ff';
-                    ctx.shadowColor = '#0055ff';
-                    ctx.beginPath();
-                    ctx.moveTo(this.w * 0.2, 0);
-                    ctx.lineTo(this.w * 0.8, 0);
-                    ctx.lineTo(this.w * 0.5, 15 + Math.random() * 10);
-                    ctx.fill();
-                }
-
-                ctx.restore();
-            }
-        }
-
-        // Obstacle Class
-        class Obstacle {
-            constructor(type, speedMult) {
-                this.x = canvas.width;
-                this.type = type; // 0: ground, 1: air high, 2: air low
-                this.w = type === 0 ? 30 + Math.random() * 20 : 50;
-                this.h = type === 0 ? 50 + Math.random() * 40 : 20;
-                
-                if (type === 0) this.y = groundY;
-                else if (type === 1) this.y = groundY - 70; // Duck under this
-                else this.y = groundY - 30; // Jump over this
-
-                this.color = type === 0 ? '#ff0055' : '#ffaa00'; // Magenta ground, Orange air
-                this.markedForDeletion = false;
-                this.speedMult = speedMult;
-            }
-
-            update(dt) {
-                this.x -= BASE_SPEED * this.speedMult * dt;
-                if (this.x + this.w < 0) this.markedForDeletion = true;
-            }
-
-            draw(ctx) {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = '#110000';
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 3;
-
-                ctx.beginPath();
-                if (this.type === 0) {
-                    // Ground spike
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(this.w, 0);
-                    ctx.lineTo(this.w * 0.8, -this.h);
-                    ctx.lineTo(this.w * 0.2, -this.h);
-                } else {
-                    // Air laser
-                    ctx.rect(0, -this.h, this.w, this.h);
-                    // Inner laser core
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(2, -this.h + 5, this.w - 4, this.h - 10);
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.restore();
-            }
-        }
-
-        // Particle System
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.vx = (Math.random() - 0.5) * 400;
-                this.vy = (Math.random() - 1) * 400;
-                this.life = 1.0;
-                this.decay = 1.5 + Math.random();
-                this.color = color;
-                this.size = 2 + Math.random() * 4;
-            }
-            update(dt) {
-                this.x += this.vx * dt;
-                this.y += this.vy * dt;
-                this.life -= this.decay * dt;
-            }
-            draw(ctx) {
-                ctx.globalAlpha = Math.max(0, this.life);
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-                ctx.globalAlpha = 1.0;
-            }
-        }
-
-        function createParticles(x, y, count, color) {
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle(x, y, color));
-            }
-        }
-
-        // --- Core Functions ---
-
-        let spawnTimer = 0;
-        let nextSpawnTime = 1.5;
-
-        function startGame() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            STATE = 'PLAYING';
-            score = 0;
-            gameSpeed = 1;
-            obstacles = [];
-            particles = [];
-            spawnTimer = 0;
-            
-            player = new Player();
-            resize();
-
-            startScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            centerScreen.classList.add('opacity-0'); // Fade out center
-            
-            lastTime = performance.now();
             requestAnimationFrame(gameLoop);
         }
 
-        function gameOver() {
-            STATE = 'GAMEOVER';
-            SFX.crash();
-            createParticles(player.x + player.w/2, player.y - player.h/2, 50, player.color);
-            createParticles(player.x + player.w/2, player.y - player.h/2, 50, '#ff0055');
-            
-            if (score > hiScore) {
-                hiScore = Math.floor(score);
-                localStorage.setItem('cyberHiScore', hiScore);
-                hiScoreDisplay.innerText = hiScore.toString().padStart(5, '0');
-            }
-
-            centerScreen.classList.remove('opacity-0');
-            gameOverScreen.classList.remove('hidden');
+        function handleGlobalClick() {
+            if (STATE === 'MENU' || STATE === 'GAMEOVER') startGame();
         }
 
-        function drawBackground(dt) {
-            // Horizon line
-            const horizon = groundY;
-            
-            // Floor Grid (Pseudo 3D perspective)
-            ctx.strokeStyle = 'rgba(190, 24, 93, 0.3)'; // Fuchsia grid
-            ctx.lineWidth = 1;
-            
-            // Vertical perspective lines
-            ctx.beginPath();
-            const vanishingPointX = canvas.width / 2;
-            const vanishingPointY = horizon - 50;
-            
-            for (let i = -20; i <= 20; i++) {
-                const xBottom = vanishingPointX + (i * 100);
-                ctx.moveTo(vanishingPointX, horizon);
-                ctx.lineTo(xBottom, canvas.height);
-            }
-            ctx.stroke();
-
-            // Horizontal scrolling lines
-            ctx.beginPath();
-            backgroundLines.forEach(line => {
-                // Move line towards viewer
-                line.z -= (BASE_SPEED * gameSpeed * 0.5) * dt;
-                if (line.z < 0) line.z = 1000;
-
-                // Perspective projection
-                const scale = 1000 / Math.max(1, line.z);
-                const y = horizon + (scale * 20); // Push down based on scale
-                
-                if (y > horizon && y < canvas.height) {
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvas.width, y);
-                }
-            });
-            ctx.stroke();
-
-            // Glowing Horizon line
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#be185d';
-            ctx.strokeStyle = '#f472b6';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, horizon);
-            ctx.lineTo(canvas.width, horizon);
-            ctx.stroke();
-            ctx.shadowBlur = 0; // reset
-        }
-
-        function checkCollision(p, obs) {
-            // Precise AABB collision
-            const padding = 5; // Forgiving hitbox
-            
-            // Player Box
-            const px = p.x + padding;
-            const py = p.y - p.h + padding;
-            const pw = p.w - padding * 2;
-            const ph = p.h - padding * 2;
-
-            // Obstacle Box
-            const ox = obs.x + padding;
-            const oy = obs.y - obs.h + padding;
-            const ow = obs.w - padding * 2;
-            const oh = obs.h - padding * 2;
-
-            return (
-                px < ox + ow &&
-                px + pw > ox &&
-                py < oy + oh &&
-                py + ph > oy
-            );
-        }
-
-        // --- Main Loop ---
-        function gameLoop(timestamp) {
-            if (STATE !== 'PLAYING') {
-                // Continue rendering particles if dead
-                if (STATE === 'GAMEOVER') {
-                    let dt = (timestamp - lastTime) / 1000;
-                    if (dt > 0.1) dt = 0.1;
-                    lastTime = timestamp;
-
-                    ctx.fillStyle = '#05050a';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    drawBackground(dt);
-                    
-                    obstacles.forEach(obs => obs.draw(ctx));
-                    particles.forEach(p => { p.update(dt); p.draw(ctx); });
-                    particles = particles.filter(p => p.life > 0);
-                    
-                    requestAnimationFrame(gameLoop);
-                }
-                return;
-            }
-
-            // Delta time calculation
-            let dt = (timestamp - lastTime) / 1000;
-            if (dt > 0.1) dt = 0.1; // Cap dt for lag spikes
-            lastTime = timestamp;
-
-            // Clear canvas
-            ctx.fillStyle = '#05050a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Update Game Logic
-            score += 10 * gameSpeed * dt;
-            gameSpeed += 0.01 * dt; // Gradually increase speed
-            
-            // Speed UI update (throttled visually)
-            if (Math.floor(score) % 10 === 0) {
-                scoreDisplay.innerText = Math.floor(score).toString().padStart(5, '0');
-                speedDisplay.innerText = `SPEED: ${gameSpeed.toFixed(1)}x`;
-            }
-
-            // Milestone sound
-            if (Math.floor(score) % 500 === 0 && score > 10) {
-                SFX.score();
-                scoreDisplay.classList.add('text-white');
-                setTimeout(() => scoreDisplay.classList.remove('text-white'), 300);
-            }
-
-            // Render Background
-            drawBackground(dt);
-
-            // Player logic
-            player.update(dt);
-            player.draw(ctx);
-
-            // Spawner Logic
-            spawnTimer += dt;
-            if (spawnTimer >= nextSpawnTime) {
-                spawnTimer = 0;
-                
-                // Determine obstacle type based on random chance
-                let type = 0; // Ground
-                if (score > 200) {
-                    const r = Math.random();
-                    if (r < 0.3) type = 1; // High laser (duck)
-                    else if (r < 0.5) type = 2; // Low laser (jump)
-                }
-
-                obstacles.push(new Obstacle(type, gameSpeed));
-                
-                // Randomize next spawn time, gets faster as game speeds up
-                nextSpawnTime = (0.8 + Math.random() * 1.2) / gameSpeed;
-            }
-
-            // Obstacles & Collision
-            obstacles.forEach(obs => {
-                obs.update(dt);
-                obs.draw(ctx);
-                
-                if (checkCollision(player, obs)) {
-                    gameOver();
-                }
-            });
-            obstacles = obstacles.filter(obs => !obs.markedForDeletion);
-
-            // Particles
-            particles.forEach(p => {
-                p.update(dt);
-                p.draw(ctx);
-            });
-            particles = particles.filter(p => p.life > 0);
-
-            // Loop
-            if (STATE === 'PLAYING') {
-                requestAnimationFrame(gameLoop);
-            }
-        }
-
-        // ==========================================
-        // INPUT HANDLING
-        // ==========================================
-        
-        function handleKeyDown(e) {
-            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp' || e.key === ' ' || e.key === 'ArrowUp') {
+                if (STATE === 'MENU' || STATE === 'GAMEOVER') startGame();
+                else { keys.jump = true; player.jump(); }
                 e.preventDefault();
-                if (STATE === 'MENU' || STATE === 'GAMEOVER') {
-                    startGame();
-                } else {
-                    keys.jump = true;
-                    player.jump();
-                }
             }
-            if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'ArrowDown' || e.code === 'KeyS') {
+            if (e.code === 'ShiftLeft' || e.key === 'Shift' || e.code === 'ArrowDown' || e.key === 'ArrowDown') {
+                keys.duck = true; if (STATE === 'PLAYING') SFX.duck();
                 e.preventDefault();
-                keys.duck = true;
-                if (STATE === 'PLAYING') SFX.duck();
             }
-        }
+        }, {passive: false});
 
-        function handleKeyUp(e) {
-            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') keys.jump = false;
-            if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'ArrowDown' || e.code === 'KeyS') keys.duck = false;
-        }
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp' || e.key === ' ' || e.key === 'ArrowUp') keys.jump = false;
+            if (e.code === 'ShiftLeft' || e.key === 'Shift' || e.code === 'ArrowDown' || e.key === 'ArrowDown') keys.duck = false;
+        });
 
-        // Touch Controls
-        function handleTouchStart(e) {
-            e.preventDefault();
-            if (STATE === 'MENU' || STATE === 'GAMEOVER') {
-                startGame();
-                return;
-            }
-            
-            const touchY = e.touches[0].clientY;
-            if (touchY < window.innerHeight / 2) {
-                // Tap top half: Jump
-                keys.jump = true;
-                player.jump();
-            } else {
-                // Tap bottom half: Duck
-                keys.duck = true;
-                if (STATE === 'PLAYING') SFX.duck();
-            }
-        }
-
-        function handleTouchEnd(e) {
-            e.preventDefault();
-            keys.jump = false;
-            keys.duck = false;
-        }
-
-        window.addEventListener('keydown', handleKeyDown, {passive: false});
-        window.addEventListener('keyup', handleKeyUp);
-        window.addEventListener('touchstart', handleTouchStart, {passive: false});
-        window.addEventListener('touchend', handleTouchEnd);
-
-        // Initial setup
         resize();
-        // Draw the background once for the menu screen
-        ctx.fillStyle = '#05050a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#05050a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawBackground(0);
-
     </script>
 </body>
 </html>
